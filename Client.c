@@ -31,5 +31,6 @@ int main(){
     int isConnected = connect(socketFD, &clientAddress, sizeof(clientAddress)); 
     if (isConnected != 0) {
         perror(connection failed);
+        exit(1);
     }
 }

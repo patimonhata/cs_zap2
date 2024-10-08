@@ -6,7 +6,11 @@
 #include <stdlib.h>
 
 /*
-usage : Server(, servPort)
+USAGE : Server(char servAddress, int servPort)
+    This program starts up a server that communicate through sockets.
+    The argment servPort is the port this program will wait on, 
+    and servPort needs to be an integer between 0 and 65535
+EXAMPLE : Server(8080)
 */
 
 
@@ -17,18 +21,22 @@ int main(int argc, char* argv[]){
     struct sockaddr_in clientSockAddr; //client internet socket address
     char buf[1024];
     int rval;
-    unsigned short serverPort;
+    long serverPort;
+    unsigned int clientLength;
 
-    if ( argc != 2) {
+    if ( argc != 3) {
         perror("mismatch in the number of argument(should be 2)");
         exit(1);
     }
 
-    serverPort = (unsigned short) atoi(argv[1]);
-    if (serverPort = -1) {
-        perror("invalid port number");
+    char *endptr;
+    serverPort = strtol(argv[2], &endptr, 10); // will be casted to unsigned short in the call of htons()
+    //if some part of argment is invalid or if port is not in the range of unsigned short(0~65535)
+    if (*endptr != '\0' || port <= 0 || port > 65535) { 
+        printf("Invalid port number: %s\n", argv[1]);
         exit(1);
     }
+    
 
     serverSock = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSock == -1){
@@ -41,16 +49,21 @@ int main(int argc, char* argv[]){
     serverSockAddr.sin_addr.s_addr = INADDR_ANY;
     serverSockAddr.sin_port = htons(serverPort);
 
-    int bindSucceed = bind(serverSock, (struct sockaddr *) &serverSockAddr, sizeof(serverSockAddr)); //第２引数のキャストはなぜ必要?
-    if (bindSucceed == -1){
+    int statusOfBind = bind(serverSock, (struct sockaddr *) &serverSockAddr, sizeof(serverSockAddr)); //第２引数のキャストはなぜ必要?
+    if (statusOfBind != 0){
         perror("binding stream socket");
         exit(1);
     }
 
-    listen(serverSock, 5); //set que limit to be 5
+    int statusOfListen = listen(serverSock, 5); //set que limit to be 5
+    if (statusOfListen != 0) {
+        perror("listening on a socket");
+        exit(1);
+    }
     
     while(1){
-        clientSock = accept(serverSock, (struct sockaddr *) &clientSockAddr, (unsigned int *) sizeof(clientSockAddr)); //3つ目の引数が正しいか不安
+        clientLength = sizeof(clientSockAddr);
+        clientSock = accept(serverSock, (struct sockaddr *) &clientSockAddr, &clientLength);
         if (clientSock == -1){
             perror("accepting");
             exit(1);
