@@ -2,7 +2,7 @@
 #include <netinet/in.h>
 #include <stdio.h>
 #include <string.h> //memset()
-#include <unistd.h> //read()
+#include <unistd.h> //read(), close()
 #include <stdlib.h>
 #include <netdb.h>
 
@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
     struct addrinfo hints;
     struct addrinfo *results, *res;
     char buf[1024];
-    int rval;
+    int numOfBytesRead;
     long serverPort;
     unsigned int clientLength;
 
@@ -73,6 +73,7 @@ int main(int argc, char* argv[]){
 
         close(serverSock); 
     }
+    freeaddrinfo(results);           /* No longer needed */
     if (res == NULL) { //No address succeeded
         perror("binding");
         exit(1);
@@ -93,13 +94,18 @@ int main(int argc, char* argv[]){
         } else { 
             do{
                 memset(buf, 0, sizeof(buf));
-                if ((numOfBytesRead = read(clientSock, buf, sizeof(buf))) == -1)
+                numOfBytesRead = read(clientSock, buf, sizeof(buf));
+                
+                // for test
+                printf("content : %s\n", buf); 
+                
+                if (numOfBytesRead == -1)
                     perror("reading stream message");
-                if (numOfBytesRead == 0)
+                if (numOfBytesRead == 0){
                     printf("Ending connection\n");
+                }
             } while (numOfBytesRead > 0);
-
-            close(clientSock);
+            //close(clientSock);
         }
     }
 
