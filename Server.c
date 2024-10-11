@@ -1,10 +1,10 @@
-#include <sys/socket.h>
+#include <netdb.h>
 #include <netinet/in.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h> //memset()
+#include <sys/socket.h>
 #include <unistd.h> //read(), close()
-#include <stdlib.h>
-#include <netdb.h>
 
 /*
 USAGE : Server(node, servPort)
@@ -23,7 +23,8 @@ int main(int argc, char* argv[]){
     struct sockaddr_in serverSockAddr; //server internet socket address
     struct sockaddr_in clientSockAddr; //client internet socket address
     struct addrinfo hints;
-    struct addrinfo *results, *res;
+    struct addrinfo *results;
+    struct addrinfo *res;
     char buf[1024];
     int numOfBytesRead;
     long serverPort;

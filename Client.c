@@ -1,16 +1,17 @@
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <stdio.h>
 #include <netdb.h>
+#include <netinet/in.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h> //memset()
+#include <sys/socket.h>
 #include <unistd.h> //read(), close()
 
 int main(int argc, char* argv[]){
     int clientSocket;
     struct sockaddr_in6 ip6Addr_server;
-
-    struct addrinfo hints, *results, *res;
+    struct addrinfo hints;
+    struct addrinfo *results;
+    struct addrinfo *res;
     char ipstr[INET6_ADDRSTRLEN];
 
     memset(&hints, 0, sizeof(hints));
