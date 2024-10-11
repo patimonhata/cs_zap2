@@ -24,7 +24,6 @@ int main(int argc, char* argv[]){
     struct addrinfo *results;
     char buf[BUFF_SIZE];
     int numOfBytesRead;
-    //unsigned int clientLength;
 
     CheckArguments(argc, argv);
 
@@ -102,7 +101,7 @@ void CheckArguments(const int argc, char* argv[]){
 }
 
 void SetHintsForServer(struct addrinfo *hints){
-    memset(hints, 0, sizeof(hints));
+    memset(hints, 0, sizeof(*hints));
     hints->ai_family = AF_UNSPEC;      // IPv4 or IPv6
     hints->ai_socktype = SOCK_STREAM;
     hints->ai_flags = AI_PASSIVE;    /* For wildcard IP address */
