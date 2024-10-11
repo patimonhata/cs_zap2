@@ -78,21 +78,21 @@ void Usage(){
     printf("    The argments node and servPort will be directly passed to getaddrinfo() \n");
     printf("    as the 1st and 2nd argment respectively. \n");  
     printf("    The argment servPort is the port this program will wait on, \n" );
-    printf("    and servPort needs to be an integer between 0 and 65535. \n");
+    printf("    and servPort needs to be an integer between 1 and 65535. \n");
     printf("EXAMPLE : Server(localhost, 8080) \n");
     printf("--------------------------------------------------------------------------- \n");
 }
 
 void CheckArguments(const int argc, char* argv[]){
     if ( argc != 3) {
-        perror("mismatch in the number of argument(should be 2)");
+        printf("mismatch in the number of argument(should be 2) \n");
         Usage();
         exit(1);
     }
 
     char *endptr;
     long serverPort = strtol(argv[2], &endptr, 10);
-    //if some part of argment is invalid or if port is not in the correct range(0~65535)
+    //if some part of argment is invalid or if port is not in the correct range(1~65535)
     if (*endptr != '\0' || serverPort <= 0 || serverPort > 65535) { 
         printf("Invalid port number: %s\n", argv[2]);
         Usage();
